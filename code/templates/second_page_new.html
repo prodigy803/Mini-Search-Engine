@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static',filename='second_page_new.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='trial1.css') }}">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<script src="https://cdn.plot.ly/plotly-2.6.3.min.js"></script>
+<script src="plotly-2.6.3.min.js"></script>
+
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"> integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"> -->
+
+<head>
+    <style>
+        body,
+        input,
+        label,
+        option {
+            font-family: "Raleway", sans-serif
+        }
+    </style>
+    <title>Search</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+    <input type="hidden" id="country_filter" value=""/>
+    <input type="hidden" id="poi_name_filter" value=""/>
+    <input type="hidden" id="language_filter" value=""/>
+    <div>
+        <div class="navigation-bar">
+            <ul class="nav">
+                <li><a class="active" href="{{ url_for('poi_analysis') }}">POI Analysis</a></li>
+                <li><a class="active" href="{{ url_for('overview') }}">Overview Analysis</a></li>
+                <li><a class="active" href="{{ url_for('home') }}">Home</a></li>
+                <img src="{{ url_for('static',filename='logo_second_page.png') }}" height="50" width="130">
+            </ul>
+        </div>
+        <div class="search_box">
+            <form action="{{ url_for('search') }}" method="get" id="search_form">
+                <input id="search_input" type="text" name="query" placeholder=" what are you looking for?">
+                <button class="fas fa-search"></button>
+            <!-- <i class="fas fa-search"></i> -->
+            </form>
+        </div>
+    </div>
+    <div class = "restbody">
+        <div class="wrapper">
+            <!-- <form action="#">
+                <div class="select-box">
+                    <label for="select-box1" class="label select-box1"><span class="label-desc">POI name</span></label>
+                    <select name = "select-box1" id="select-box1" class="select">
+                        <option value="Choice 1">Falkland Islands</option>
+                        <option value="Choice 2">Germany</option>
+                        <option value="Choice 3">Neverland</option>
+                    </select>
+                </div>   
+            </form>  -->
+            <form action="{{ url_for('filtered') }}" method="get" id="search_with_filter">
+                <input type="hidden" name="query" value='{{query}}'/>
+                <!-- <input type="hidden" id="country_filter" value=""/>
+                <input type="hidden" id="poi_name_filter" value=""/> -->
+                <div class="selectdiv">
+                    <label>
+                        <select id="language" name="language" onchange="filtervalues()">
+                            <option selected> Language </option>
+                            <option value="Hindi">Hindi</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="English">English</option>
+                        </select>
+                    </label>
+
+                </div>
+            
+                <div class="selectdiv">
+                    <label>
+                        <select id="country" name="country" onchange="filtervalues()">
+                            <option selected> Country </option>
+                            <option>Mexico</option>
+                            <option>USA</option>
+                            <option>India</option>
+                        </select>
+                    </label>
+                </div>
+                <!-- </div> -->
+                <!-- <div class="sidenav"> -->
+                <!-- <div class="selectdiv">
+                    <label>
+                        <select>
+                            <option selected> Topic </option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                        </select>
+                    </label>
+                </div> -->
+                <!-- </div> -->
+                <!-- <div class="sidenav"> -->
+                <div class="selectdiv">
+                    <label>
+                        <select id="poi_name" name="POI NAME" onchange="filtervalues()">
+                            <option selected> POI name </option>
+                            <option value="HLGatell">Hugo López-Gatell</option>
+                            <option value="CDCgov">CDC Gov</option>
+                            <option value="JoeBiden">Joe Biden</option>
+                            <option value="lopezobrador_">Andrés Manuel López Obrador</option>
+                            <option value="GovLarryHogan">Larry Hogan</option>
+                            <option value="rashtrapatibhvn">President of India</option>
+                            <option value="myogiadityanath">Yogi Adityanath</option>
+                            <option value="SSalud_mx">SALUD México</option>
+                            <option value="alfredodelmazo">Alfredo Del Mazo</option>
+                            <option value="Claudiashein">Claudia Sheinbaum</option>
+                            <option value="narendramodi">Narendra Modi</option>
+                            <option value="mansukhmandviya">Mansukh Mandviya</option>
+                            <option value="GovAndyBeshear">Andy Beshear</option>
+                            <option value="GovernorTomWolf">Tom Wolf</option>
+                            <option value="GovMurphy">Phil Murphy</option>
+                            <option value="ShashiTharoor">Shashi Tharoor</option>
+                            <option value="MoHFW_INDIA">Ministry of Health - India</option>
+                            <option value="OfficeOf_MM">Office - Mansukh Mandaviya</option>
+                            <option value="FelipeCalderon">Felipe Calderón</option>
+                            <option value="GovKathyHochul">Kathy Hochul</option>
+                            <option value="NC_Governor">Roy Cooper</option>
+                            <option value="AOC">Alexandria Ocasio-Cortez</option>
+                            <option value="GavinNewsom">Gavin Newsom</option>
+                            <option value="POTUS">POTUS</option>
+                            <option value="BernieSanders">Bernie Sanders</option>
+                            <option value="SpeakerPelosi">Nancy Pelosi</option>
+                            <option value="COFEPRIS">COFEPRIS</option>
+                            <option value="RahulGandhi">Rahul Gandhi</option>
+                            <option value="VP">Vice President Kamala Harris</option>
+                            <option value="SenatorDurbin">Dick Durbin</option>
+                            <option value="ArvindKejriwal">Arvind Kejriwal</option>
+                            <option value="GovPritzker">JB Pritzker</option>
+                            <option value="GovTimWalz">Tim Walz</option>
+                            <option value="GovNedLamont">Ned Lamont</option>
+                            <option value="govkristinoem">Kristi Noem</option>
+                            <option value="GovHawaii">David Ige</option>
+                            <option value="JaimeRdzNL">Jaime Rdz el Bronco</option>
+                            <option value="GovDunleavy">Mike Dunleavy</option>
+                            <option value="AUThackeray">Aaditya Thackeray</option>
+                            <option value="dougducey">Doug Ducey</option>
+                            <option value="GovInslee">Jay Inslee</option>
+                            <option value="GovRonDeSantis">Ron DeSantis</option>
+                            <option value="tedcruz">Ted Cruz</option>
+                        </select>
+                    </label>
+                </div>
+            </form>
+            <!-- </div> -->
+            
+        </div>
+        <div class = "maindata">
+            <div class ="data">
+                <ul id="myList"></ul>
+            </div>
+        </div>
+        <div class = "graphs">
+            <div id='tweet_count_graph' name='tweet_count_graph'></div>
+            <div id='tweet_lang_graph' name='tweet_lang_graph'></div>
+            <div id='tweet_country_graph' name='tweet_country_graph'></div>
+            <div id='tweet_poi_graph' name='tweet_poi_graph'></div>
+        </div>
+        
+    </div>
+    
+    <script>
+
+    function filtervalues(){
+        var language = document.getElementById("language").value;
+        var poi_name = document.getElementById("poi_name").value;
+        var country = document.getElementById("country").value;
+        if(poi_name != null && poi_name.length != 0){
+            document.getElementById("poi_name_filter").value = poi_name;
+        }
+        if(country != null && country.length != 0){
+            document.getElementById("country_filter").value = country;
+        }
+        if(language != null && language.length != 0){
+            document.getElementById("language_filter").value = language;
+        }
+        document.getElementById("search_with_filter").submit();
+    }
+
+    var e = document.getElementById("language");
+    var strUser = e.value;
+    var lang = '{{ lang }}'
+    if(lang.length != 0){
+        document.getElementById("language").value = '{{ lang }}';
+    }
+    var poi_name = '{{ poi_name }}'
+    if(poi_name.length != 0){
+        document.getElementById("poi_name").value = '{{ poi_name }}';
+    }
+    var country = '{{ country }}'
+    if(country.length != 0){
+        document.getElementById("country").value = '{{ country }}';
+    }
+
+    tweet_count_graph = document.getElementById("tweet_count_graph")
+    tweet_count_data = {{ tweet_count_data|tojson }}
+    var tweet_count_layout = {
+        title: 'Tweets count'
+    }
+    Plotly.newPlot(tweet_count_graph, tweet_count_data, tweet_count_layout);
+
+    tweet_lang_graph = document.getElementById("tweet_lang_graph")
+    tweet_lang_data = {{ tweet_lang_data|tojson }}
+    var tweet_lang_layout = {
+        title: 'Language tweets count'
+    }
+    Plotly.newPlot(tweet_lang_graph, tweet_lang_data, tweet_lang_layout);
+
+    tweet_country_graph = document.getElementById("tweet_country_graph")
+    tweet_country_data = {{ tweet_country_data|tojson }}
+    var tweet_country_layout = {
+        title: 'Country tweets count'
+    }
+    Plotly.newPlot(tweet_country_graph, tweet_country_data, tweet_country_layout);
+
+    tweet_poi_graph = document.getElementById("tweet_poi_graph")
+    poi_tweet_count = {{ poi_tweet_count|tojson }}
+    var tweet_poi_layout = {
+        title: 'POI tweets count'
+    }
+    Plotly.newPlot(tweet_poi_graph, poi_tweet_count, tweet_poi_layout);
+
+    var data = {{ data|tojson }};
+    console.log(typeof(data))
+    console.log(data[1])
+    // for(i=0; i<50; i++)
+    // {
+    //     console.log(data[i])
+    // }
+    let list = document.getElementById("myList");
+
+    data.forEach((item) => {
+        let li = document.createElement("li");
+        if(item!=undefined){
+            li.id = "list_item"
+            // if(item['poi_name']){
+            //     if(item['tweet_text']){
+            //         if(item['tweet_urls']){
+            //             if(item['verified'] == 1.0){
+            //                 li.innerHTML = item['poi_name']+"<img src=\"{{ url_for('static',filename='verified.png') }}\" height=\"15\" width=\"17\">"+"<br/>"+"<br/>"+item['tweet_text']+"<br/>"+"<br/>"+"<a href ="+item['tweet_urls'][0]+">"+item['tweet_urls'][0]+"</a>"+"<br/>";
+            //             } else{
+            //                 li.innerHTML = item['poi_name']+"<br/>"+"<br/>"+item['tweet_text']+"<br/>"+"<br/>"+"<a href ="+item['tweet_urls'][0]+">"+item['tweet_urls'][0]+"</a>"+"<br/>";
+            //             }
+            //         }
+            //         else{
+            //             if(item['verified'] == 1.0){
+            //                 li.innerHTML = item['poi_name']+"<img src=\"{{ url_for('static',filename='verified.png') }}\" height=\"15\" width=\"17\">"+"<br/>"+"<br/>"+item['tweet_text']
+            //             } else {
+            //                 li.innerHTML = item['poi_name']+"<br/>"+"<br/>"+item['tweet_text']
+            //             }
+            //         }
+            //     }
+            // }else {
+            //     if(item['tweet_text']){
+            //         if(item['tweet_urls']){
+            //             if(item['verified'] == 1.0) {
+            //                 li.innerHTML = 'Twitter User'+"<img src=\"{{ url_for('static',filename='verified.png') }}\" height=\"15\" width=\"17\">"+"<br/>"+"<br/>"+item['tweet_text']+"<br/>"+"<br/>"+"<a href ="+item['tweet_urls'][0]+">"+item['tweet_urls'][0]+"</a>"+"<br/>";
+            //             } else{
+            //                 li.innerHTML = 'Twitter User'+"<br/>"+"<br/>"+item['tweet_text']+"<br/>"+"<br/>"+"<a href ="+item['tweet_urls'][0]+">"+item['tweet_urls'][0]+"</a>"+"<br/>";
+            //             }
+            //         }
+            //         else{
+            //             if(item['verified'] == 1.0){
+            //                 li.innerHTML = 'Twitter User'+"<img src=\"{{ url_for('static',filename='verified.png') }}\" height=\"15\" width=\"17\">"+"<br/>"+"<br/>"+item['tweet_text']
+            //             }else {
+            //                 li.innerHTML = 'Twitter User'+"<br/>"+"<br/>"+item['tweet_text']    
+            //             }
+            //         }
+            //     }
+            // }
+            // if(item.){
+            //     li.innerHTML = "<a href ="+item.tweet_urls+">"+item.tweet_urls+"</a>"+"<br/>"+item.tweet_text;
+            //     if(item.poi_name!=undefined){
+            //         li.innerHTML = item.poi_name+"<br/>"+"<br/>"+"<a href ="+item.tweet_urls+">"+item.tweet_urls+"</a>"+"<br/>"+"<br/>"+item.tweet_text;
+            //     }
+            //     else{
+            //         li.innerHTML = "<a href ="+item.tweet_urls+">"+item.tweet_urls+"</a>"+"<br/>"+"<br/>"+item.tweet_text;
+            //     }
+            // }
+            // else{
+            //     li.innerHTML = item.tweet_text;
+            // }
+            // if(item.tweet_urls[0].length!=0){
+            //     console.log(item.tweet_urls[0].slice(2,item.tweet_urls[0].length-2));
+            // }
+            // // console.log(item.tweet_urls[0].length==0) //.slice(1,(item.tweet_urls[0].length)-2));
+            // console.log(item.tweet_urls)
+            // console.log(item.tweet_urls!='[]')
+            // li.innerText = item; 
+            // console.log(typeof(item['country']), item['country'])
+            // li.innerHTML = item['poi_name'];
+            li.innerHTML = item
+            list.appendChild(li);
+        }
+    });
+
+        function show() {
+            // const urlParams = new URLSearchParams(window.location.search);
+            // const query = urlParams.get('query');
+            document.getElementById("search_input").value = '{{query}}';
+        }
+        show();
+        // var dropdown = document.getElementsByClassName("dropdown-btn");
+        // var i;
+        // for (i = 0; i < dropdown.length; i++) {
+        // dropdown[i].addEventListener("click", function() {
+        // this.classList.toggle("active");
+        // var dropdownContent = this.nextElementSibling;
+        // if (dropdownContent.style.display === "block") {
+        // dropdownContent.style.display = "none";
+        // } else {
+        // dropdownContent.style.display = "block";
+        // }
+        // });
+        // }
+        $("select").on("click", function () {
+            (this).parent(".select-box").toggleClass("open");
+        });
+
+        $(document).mouseup(function (e) {
+            var container = $(".select-box");
+            if (container.has(e.target).length === 0) {
+                container.removeClass("open");
+            }
+        });
+
+        $("select").on("change", function () {
+            var selection = $(this).find("option:selected").text(),
+                labelFor = $(this).attr("id"),
+                label = $("[for='" + labelFor + "']");
+            label.find(".label-desc").html(selection);
+        });
+
+        // fetch('people.json')
+        //     .then(function (response) {
+        //         return response.json();
+        //     })
+        //     .then(function (data) {
+        //         appendData(data);
+        //     })
+        //     .catch(function (err) {
+        //         console.log('error: ' + err);
+        //     });
+        // var doc = [{'id': '1.439267285E18', 'verified': 0.0, 'tweet_text': '@narendramodi Modi ji Modi ji Modi ji : baki aap samajdar toh hain hi 🙏🏻', 'tweet_lang': 'hi', 'tweet_urls': ['[]'], 'tweet_date': '2021-09-18T17:00:00Z', 'mentions': ["['narendramodi']"], 'replied_to_tweet_id': 1439213992000000000, 'replied_to_user_id': 18839785, 'reply_text': 'Modi ji Modi ji Modi ji : baki aap samajdar toh hain hi 🙏🏻', 'tweet_emoticons': ["['🙏🏻']"], 'text_hi': 'Modi ji Modi ji Modi ji : baki aap samajdar toh hain hi 🙏🏻', 'poi_id': 0, 'new_country': 'INDIA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703225404030980},{'id': '1.439205024E18', 'verified': 0.0, 'tweet_text': '@narendramodi Har har modi ghar ghar modi', 'tweet_lang': 'hi', 'tweet_urls': ['[]'], 'tweet_date': '2021-09-18T12:00:00Z', 'mentions': ["['narendramodi']"], 'replied_to_tweet_id': 1439095799000000000, 'replied_to_user_id': 18839785, 'reply_text': 'Har har modi ghar ghar modi', 'text_hi': 'Har har modi ghar ghar modi', 'poi_id': 0, 'new_country': 'INDIA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703225493159940},{'id': '1.274573609E18', 'verified': 1.0, 'tweet_text': 'Narendra Modi\n\nIs actually\n\nSurender Modi\n\nhttps://t.co/PbQ44skm0Z', 'tweet_lang': 'en', 'tweet_urls': ["['https://t.co/PbQ44skm0Z']"], 'country': 'INDIA', 'tweet_date': '2020-06-21T05:00:00Z', 'mentions': ["['https://t.co/PbQ44skm0Z']"], 'text_en': 'Narendra Modi Is actually Surender Modi , ', 'poi_name': 'RahulGandhi', 'poi_id': 3171712086, 'new_country': 'INDIA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703225051709442},{'id': '1.439289245E18', 'verified': 0.0, 'tweet_text': '@narendramodi 2012 ka Modi aaj ke Modi ko pehchan bhi nahin payega', 'tweet_lang': 'hi', 'tweet_urls': ['[]'], 'tweet_date': '2021-09-18T18:00:00Z', 'mentions': ["['narendramodi']"], 'replied_to_tweet_id': 1439221543000000000, 'replied_to_user_id': 18839785, 'reply_text': '2012 ka Modi aaj ke Modi ko pehchan bhi nahin payega', 'text_hi': '2012 ka Modi aaj ke Modi ko pehchan bhi nahin payega', 'poi_id': 0, 'new_country': 'INDIA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703225430245376},{'id': '1.439270379E18', 'verified': 0.0, 'tweet_text': '@narendramodi Modi ji lon maf kardo modi ji  ek lakh 90 hagar ka hai', 'tweet_lang': 'hi', 'tweet_urls': ['[]'], 'country': 'UTTAR PRADESH, INDIA', 'tweet_date': '2021-09-18T17:00:00Z', 'mentions': ["['narendramodi']"], 'replied_to_tweet_id': 1439222009000000000, 'replied_to_user_id': 18839785, 'reply_text': 'Modi ji lon maf kardo modi ji ek lakh 90 hagar ka hai', 'text_hi': 'Modi ji lon maf kardo modi ji ek lakh 90 hagar ka hai', 'poi_id': 0, 'new_country': 'INDIA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703225441779713},{'id': '1.439214441E18', 'verified': 0.0, 'tweet_text': '@narendramodi Well modi', 'tweet_lang': 'en', 'tweet_urls': ['[]'], 'country': 'KERALA, INDIA', 'tweet_date': '2021-09-18T13:00:00Z', 'mentions': ["['narendramodi']"], 'replied_to_tweet_id': 1439214245000000000, 'replied_to_user_id': 18839785, 'reply_text': 'Well modi', 'text_en': 'Well modi', 'poi_id': 0, 'new_country': 'INDIA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703225512034307},{'id': '1.438833585E18', 'verified': 0.0, 'tweet_text': 'Answer to @RahulGandhi s query:  Where are the vaccines Modi ji.\n\nModi ji --&gt;\n#LargestVaccineDrive https://t.co/henjdsnxl4 https://t.co/rQX1EjSvEl', 'tweet_lang': 'en', 'hashtags': ["['LargestVaccineDrive']"], 'tweet_urls': ["['https://t.co/henjdsnxl4', 'https://t.co/rQX1EjSvEl']"], 'country': 'USA', 'username': 'HindustaniTweet', 'tweet_date': '2021-09-17T12:00:00Z', 'mentions': ["['RahulGandhi']"], 'text_en': 'Answer to  s query:  Where are the vaccines Modi ji.\n\nModi ji --&gt;\n  ', 'new_country': 'USA', 'vaccine_covid_classification': ['vaccine'], 'version': 1717703133712351240},{'id': '1.440992112E18', 'verified': 0.0, 'tweet_text': '@ndtv @Swamy39 let down\n@narendramodi\nshould have warned\non US visit\n\nPASSPORT\nVISA\nVACCINATION\n\nModi has none\n@DrSJaishankar movement\nwill stop\nif he meets Modi\nunvaccinated\n\nJaishankar may deliver Modi address in @UN\n\n@Chinamission2un\n@ChinaAmbUN\nclose watch on Modi\nalert US officers', 'tweet_lang': 'en', 'tweet_urls': ['[]'], 'country': 'PALO ALTO, CA. USA', 'tweet_date': '2021-09-23T11:00:00Z', 'mentions': ["['narendramodi', 'Swamy39', 'ndtv', 'ChinaAmbUN', 'Chinamission2un', 'UN', 'DrSJaishankar']"], 'replied_to_tweet_id': 1440977948000000000, 'replied_to_user_id': 37034483, 'reply_text': 'let down should have warned on US visit PASSPORT VISA VACCINATION Modi has none movement will stop if he meets Modi unvaccinated Jaishankar may deliver Modi address in close watch on Modi alert US officers', 'text_en': 'let down should have warned on US visit PASSPORT VISA VACCINATION Modi has none movement will stop if he meets Modi unvaccinated Jaishankar may deliver Modi address in close watch on Modi alert US officers', 'poi_id': 0, 'new_country': 'USA', 'vaccine_covid_classification': ['vaccine'], 'version': 1717703196673048578},{'id': '1.43930748E18', 'verified': 0.0, 'tweet_text': '@narendramodi Modi kutta hai', 'tweet_lang': 'hi', 'country': 'INDIA', 'tweet_date': '2021-09-18T19:00:00Z', 'mentions': ["['narendramodi']"], 'replied_to_tweet_id': 1439221543000000000, 'replied_to_user_id': 18839785, 'reply_text': '@narendramodi Modi kutta hai', 'text_hi': ' Modi kutta hai', 'new_country': 'INDIA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703193970868229},{'id': '1.439545774E18', 'verified': 0.0, 'tweet_text': '@narendramodi Thanks modi ji', 'tweet_lang': 'en', 'country': 'USA', 'tweet_date': '2021-09-19T11:00:00Z', 'mentions': ["['narendramodi']"], 'replied_to_tweet_id': 1439220631000000000, 'replied_to_user_id': 18839785, 'reply_text': '@narendramodi Thanks modi ji', 'text_en': 'Thanks modi ji', 'new_country': 'USA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703287011016705},{'id': '1.439273224E18', 'verified': 0.0, 'tweet_text': '@narendramodi Jai Ho Modi ji', 'tweet_lang': 'hi', 'tweet_urls': ['[]'], 'tweet_date': '2021-09-18T17:00:00Z', 'mentions': ["['narendramodi']"], 'replied_to_tweet_id': 1439220631000000000, 'replied_to_user_id': 18839785, 'reply_text': 'Jai Ho Modi ji', 'text_hi': 'Jai Ho Modi ji', 'poi_id': 0, 'new_country': 'INDIA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703225429196802},{'id': '1.439867389E18', 'verified': 0.0, 'tweet_text': '@narendramodi Jai Hind Modi ji', 'tweet_lang': 'hi', 'country': 'INDIA', 'tweet_date': '2021-09-20T08:00:00Z', 'mentions': ["['narendramodi']"], 'replied_to_tweet_id': 1439222009000000000, 'replied_to_user_id': 18839785, 'reply_text': '@narendramodi Jai Hind Modi ji', 'text_hi': 'Jai Hind Modi ji', 'new_country': 'INDIA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703286970122242},{'id': '1.438919463E18', 'verified': 0.0, 'tweet_text': '@narendramodi Happy bday modi ji', 'tweet_lang': 'en', 'country': 'USA', 'tweet_date': '2021-09-17T18:00:00Z', 'mentions': ["['narendramodi']"], 'replied_to_tweet_id': 1434910668000000000, 'replied_to_user_id': 18839785, 'reply_text': '@narendramodi Happy bday modi ji', 'text_en': ' Happy bday modi ji', 'new_country': 'USA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703193990791168},{'id': '1.438744658E18', 'verified': 0.0, 'tweet_text': '@narendramodi @ArvindKejriwal Happy birthday modi ji...', 'tweet_lang': 'en', 'country': 'USA', 'tweet_date': '2021-09-17T06:00:00Z', 'mentions': ["['narendramodi', 'ArvindKejriwal']"], 'replied_to_tweet_id': 1427109298000000000, 'replied_to_user_id': 18839785, 'reply_text': '@narendramodi @ArvindKejriwal Happy birthday modi ji...', 'text_en': '  Happy birthday modi ji...', 'new_country': 'USA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703193998131210},{'id': '1.438712715E18', 'verified': 0.0, 'tweet_text': '@narendramodi @bhupeshbaghel Happy birthday modi ji', 'tweet_lang': 'en', 'country': 'USA', 'tweet_date': '2021-09-17T04:00:00Z', 'mentions': ["['narendramodi', 'bhupeshbaghel']"], 'replied_to_tweet_id': 1429708407000000000, 'replied_to_user_id': 18839785, 'reply_text': '@narendramodi @bhupeshbaghel Happy birthday modi ji', 'text_en': '  Happy birthday modi ji', 'new_country': 'USA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703194000228354},{'id': '1.438707539E18', 'verified': 1.0, 'tweet_text': 'Happy birthday, Modi ji.', 'tweet_lang': 'en', 'tweet_urls': ['[]'], 'country': 'INDIA', 'tweet_date': '2021-09-17T04:00:00Z', 'text_en': 'Happy birthday, Modi ji.', 'poi_name': 'RahulGandhi', 'poi_id': 3171712086, 'new_country': 'INDIA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703224917491717},{'id': '1.438931391E18', 'verified': 0.0, 'tweet_text': '@myogiadityanath @narendramodi Happy birthday modi ji', 'tweet_lang': 'en', 'tweet_urls': ['[]'], 'tweet_date': '2021-09-17T18:00:00Z', 'mentions': ["['myogiadityanath', 'narendramodi']"], 'replied_to_tweet_id': 1438890963000000000, 'replied_to_user_id': 3437532637, 'reply_text': 'Happy birthday modi ji', 'text_en': 'Happy birthday modi ji', 'poi_id': 0, 'new_country': 'USA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703225358942208},{'id': '1.439224848E18', 'verified': 0.0, 'tweet_text': '@narendramodi Great Achievement Modi Ji.', 'tweet_lang': 'en', 'tweet_urls': ['[]'], 'country': 'DINDIGUL, INDIA', 'tweet_date': '2021-09-18T14:00:00Z', 'mentions': ["['narendramodi']"], 'replied_to_tweet_id': 1438885802000000000, 'replied_to_user_id': 18839785, 'reply_text': 'Great Achievement Modi Ji.', 'text_en': 'Great Achievement Modi Ji.', 'poi_id': 0, 'new_country': 'INDIA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703225486868484},{'id': '1.439861849E18', 'verified': 0.0, 'tweet_text': '@narendramodi Happy birthday🎂🎉🎁 modi ji', 'tweet_lang': 'en', 'country': 'USA', 'tweet_date': '2021-09-20T08:00:00Z', 'mentions': ["['narendramodi']"], 'replied_to_tweet_id': 1439064718000000000, 'replied_to_user_id': 18839785, 'reply_text': '@narendramodi Happy birthday🎂🎉🎁 modi ji', 'text_en': 'Happy birthday modi ji', 'new_country': 'USA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703286970122244},{'id': '1.439825194E18', 'verified': 0.0, 'tweet_text': '@narendramodi Thank you Modi ji', 'tweet_lang': 'en', 'country': 'USA', 'tweet_date': '2021-09-20T06:00:00Z', 'mentions': ["['narendramodi']"], 'replied_to_tweet_id': 1438885431000000000, 'replied_to_user_id': 18839785, 'reply_text': '@narendramodi Thank you Modi ji', 'text_en': 'Thank you Modi ji', 'new_country': 'USA', 'vaccine_covid_classification': ['Neither'], 'version': 1717703286975365120}]
+        // var mainContainer = document.getElementById("myData");
+        // for (var i = 0; i < data.length; i++) {
+        //     var div = document.createElement("div");
+        //     div.innerHTML = 'Name: ' + data[i].username + ' ' + data[i].tweet_text
+        //     mainContainer.appendChild(div);
+        // }
+        
+      
+</script>
+</body>
+
+</html>
